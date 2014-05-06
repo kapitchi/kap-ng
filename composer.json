@@ -1,0 +1,30 @@
+{
+     "name": "kapitchi/kap-ng",
+     "license": "MIT",
+     "description": "ZF2 AngularJS view helpers",
+     "keywords": [
+        "kapitchi",
+        "zf2",
+        "angularjs"
+    ],
+    "authors": [
+        {
+            "name": "Matus Zeman",
+            "email": "mz@kapitchi.com",
+            "homepage": "http://kapitchi.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "dev@kapitchi.com"
+    },
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "autoload": {
+        "psr-0": {
+            "KapNg": "src/"
+        }
+    }
+}
