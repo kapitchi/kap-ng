@@ -16,8 +16,14 @@ class TemplateController extends AbstractActionController
 {
     public function templateAction()
     {
+        $template = $this->params()->fromRoute('template');
+        $resolver = $this->getServiceLocator()->get('ViewResolver');
+        if(!$resolver->resolve($template)) {
+            return $this->notFoundAction();
+        }
+        
         $model = new ViewModel();
-        $model->setTemplate('ng-template/' . $this->params()->fromRoute('template'));
+        $model->setTemplate('ng-template/' . $template);
         $model->setTerminal(true);//disable layout
         
         return $model;
