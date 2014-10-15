@@ -9,6 +9,7 @@ use Zend\View\Helper\AbstractHelper;
 class Ng extends AbstractHelper implements FactoryInterface
 {
     protected $apps = [];
+    protected $constants = [];
 
     /**
      * @TODO
@@ -30,7 +31,7 @@ class Ng extends AbstractHelper implements FactoryInterface
         
         return $this;
     }
-
+    
     public function __toString()
     {
         return $this->render();
@@ -40,13 +41,19 @@ class Ng extends AbstractHelper implements FactoryInterface
     {
         $this->apps[$target] = (array)$modules;
     }
+    
+    public function constant($key, $value)
+    {
+        $this->constants[$key] = $value;
+    }
 
     public function render()
     {
         return $this->getView()->partial(
             'kap-ng/loader',
             array(
-                'apps' => $this->apps
+                'apps' => $this->apps,
+                'constants' => $this->constants
             )
         );
     }
