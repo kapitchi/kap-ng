@@ -42,8 +42,15 @@ class Ng extends AbstractHelper implements FactoryInterface
         $this->apps[$target] = (array)$modules;
     }
     
-    public function constant($key, $value)
+    public function constant($key, $value = null)
     {
+        if(is_array($key)) {
+            foreach($key as $cKey => $value) {
+                $this->constant($cKey, $value);
+            }
+            return;
+        }
+        
         $this->constants[$key] = $value;
     }
 
