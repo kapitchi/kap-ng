@@ -10,7 +10,11 @@ class Ng extends AbstractHelper implements FactoryInterface
 {
     protected $apps = [];
     protected $constants = [];
-
+    protected $rootScope = [];
+    protected $templates = [];
+    protected $loaderTemplate = 'kap-ng/loader';
+    protected $lastTarget = 'document';//TODO should this be default?
+    
     /**
      * @TODO
      * Factory for itself
@@ -39,7 +43,24 @@ class Ng extends AbstractHelper implements FactoryInterface
 
     public function bootstrap($target, $modules)
     {
-        $this->apps[$target] = (array)$modules;
+        if(empty($modules)) {
+            $modules = $target;
+            
+            if(empty($this->lastTarget)) {
+                //TODO proper exception
+                throw new \Exception("Last target unknown");
+            }
+            
+            $target = $this->lastTarget;
+        }
+        
+        if(!isset($this->apps[$target])) {
+            $this->apps[$target] = [];
+        }
+        
+        $this->apps[$target] = array_merge($this->apps[$target], (array)$modules);
+        
+        $this->lastTarget = $target;
     }
     
     public function constant($key, $value = null)
@@ -53,14 +74,33 @@ class Ng extends AbstractHelper implements FactoryInterface
         
         $this->constants[$key] = $value;
     }
+    
+    public function scopeVar($key, $value = null)
+    {
+        if(is_array($key)) {
+            foreach($key as $cKey => $value) {
+                $this->scopeVar($cKey, $value);
+            }
+            return;
+        }
+
+        $this->rootScope[$key] = $value;
+    }
+    
+    public function template($id)
+    {
+        
+    }
+    
 
     public function render()
     {
         return $this->getView()->partial(
-            'kap-ng/loader',
+            $this->loaderTemplate,
             array(
                 'apps' => $this->apps,
-                'constants' => $this->constants
+                'constants' => $this->constants,
+                'rootScope' => $this->rootScope,
             )
         );
     }
