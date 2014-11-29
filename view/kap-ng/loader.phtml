@@ -7,15 +7,30 @@ foreach($this->apps as $target => $modules):
     $require = array_merge(['angular'], array_map(function($item) {
         return 'module/' . $item;
     }, $modules));
+    
+    $serverModuleName = 'target-module-' . $target;
+    $consts = $this->constants;
+    
+    $bootstrapModules = $modules;
+    $bootstrapModules[] = $serverModuleName;
+
     ?>
     <script>
         require(<?=json_encode($require)?>, function(angular) {
+            
+            //TODO we should have one server module only
+            var serverModule = angular.module('<?=$serverModuleName?>', []);
+            <?php foreach($consts as $key => $value):?>
+                serverModule.constant('<?=$key?>', <?=json_encode($value)?>);
+            <?php endforeach; ?>
+            //END
+            
             <?php if($target === 'document'):?>
-                angular.bootstrap(document.documentElement, <?=json_encode($modules)?>);
+                angular.bootstrap(document.documentElement, <?=json_encode($bootstrapModules)?>);
             <?php elseif($target === 'body'):?>
-                angular.bootstrap(document.body, <?=json_encode($modules)?>);
+                angular.bootstrap(document.body, <?=json_encode($bootstrapModules)?>);
             <?php else:?>
-                angular.bootstrap(document.getElementById('<?=$target?>'), <?=json_encode($modules)?>);
+                angular.bootstrap(document.getElementById('<?=$target?>'), <?=json_encode($bootstrapModules)?>);
             <?php endif?>
         });
     </script>
